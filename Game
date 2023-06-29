@@ -1,0 +1,94 @@
+import pygame
+import random
+
+# Inicializar Pygame
+pygame.init()
+
+# Dimensiones de la pantalla
+width = 800
+height = 600
+
+# Colores
+white = (255, 255, 255)
+red = (255, 0, 0)
+
+# Crear la ventana del juego
+window = pygame.display.set_mode((width, height))
+pygame.display.set_caption("Mi Juego")
+
+# Cargar las imágenes
+background_img = pygame.image.load("background.png")
+character_img = pygame.image.load("character.png")
+objective_img = pygame.image.load("objective.png")
+bus_img = pygame.image.load("bus.png")
+
+# Tamaño de los objetos
+character_width = 50
+character_height = 50
+objective_width = 50
+objective_height = 50
+bus_width = 100
+bus_height = 50
+
+# Posición inicial del personaje
+character_x = width // 2 - character_width // 2
+character_y = height - character_height
+
+# Posición del objetivo
+objective_x = width // 2 - objective_width // 2
+objective_y = 0
+
+# Posición del bus
+bus_x = width // 2 - bus_width // 2
+bus_y = 0
+
+# Velocidad del personaje
+character_speed = 3
+
+# Vidas del personaje
+lives = 3
+
+# Función para dibujar los objetos en la pantalla
+def draw_objects():
+    window.blit(background_img, (0, 0))
+    window.blit(character_img, (character_x, character_y))
+    window.blit(objective_img, (objective_x, objective_y))
+    window.blit(bus_img, (bus_x, bus_y))
+    pygame.display.update()
+
+# Función principal del juego
+def game():
+    running = True
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and character_x > 0:
+            character_x -= character_speed
+        if keys[pygame.K_RIGHT] and character_x < width - character_width:
+            character_x += character_speed
+
+        # Detectar colisión con el objetivo
+        if character_x + character_width >= objective_x and character_x <= objective_x + objective_width and character_y + character_height >= objective_y:
+            print("¡Has ganado!")
+            running = False
+
+        # Detectar colisión con los objetos aleatorios
+        if character_x + character_width >= bus_x and character_x <= bus_x + bus_width and character_y + character_height >= bus_y:
+            lives -= 1
+            print("Te quedan", lives, "vidas")
+
+        if lives == 0 or character_y + character_height >= height:
+            print("¡Has perdido!")
+            running = False
+
+        draw_objects()
+
+# Ejecutar el juego
+game()
+
+# Finalizar Pygame
+pygame.quit()
